@@ -1,28 +1,19 @@
 #include <Windows.h>
-#include <iostream>
 
-#define AE 0xC4
-#define ae 0xE4
-#define OE 0xD6
-#define oe 0xF6
-#define UE 0xDC
-#define ue 0xFC
-#define SS 0xDF
-
+// VK key codes
 #define A 0x41
 #define O 0x4F
 #define U 0x55
 #define S 0x53
 
-bool flagA = false;
-bool flagO = false;
-bool flagU = false;
-bool flagS = false;
-
-bool mainCondition = false;
-bool upperCase = false;
-
-using namespace std;
+// Alt codes
+#define AE 0xC4 // Ä
+#define ae 0xE4 // ä
+#define OE 0xD6 // Ö
+#define oe 0xF6 // ö
+#define UE 0xDC // Ü
+#define ue 0xFC // ü
+#define SS 0xDF // ß
 
 LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam);
 
@@ -37,12 +28,10 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
             // if (kbStruct.vkCode == A)
             //     return -1;
 
-            mainCondition = GetAsyncKeyState(VK_LCONTROL) && GetAsyncKeyState(VK_LMENU); // LeftCtrl + LeftAlt
-            upperCase = GetKeyState(VK_CAPITAL) ^ (GetAsyncKeyState(VK_LSHIFT) || GetAsyncKeyState(VK_RSHIFT));
+            bool mainCondition = GetAsyncKeyState(VK_LCONTROL) && GetAsyncKeyState(VK_LMENU); // LeftCtrl + LeftAlt
+            bool upperCase = GetKeyState(VK_CAPITAL) ^ (GetAsyncKeyState(VK_LSHIFT) || GetAsyncKeyState(VK_RSHIFT));
 
-            if (mainCondition && kbStruct.vkCode == A && !flagA) {
-                flagA = true;
-
+            if (mainCondition && kbStruct.vkCode == A) {
                 if (upperCase){
                     INPUT in[2] = { 0, 0 };
                     in[0].type = INPUT_KEYBOARD;
@@ -68,12 +57,9 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
                     UINT uS = SendInput(2, in, sizeof(INPUT));
                     return -1;
                 }
-            }else
-                flagA = false;
+            }
             
-            if (mainCondition && kbStruct.vkCode == O && !flagO) {
-                flagO = true;
-
+            if (mainCondition && kbStruct.vkCode == O) {
                 if (upperCase){
                     INPUT in[2] = { 0, 0 };
                     in[0].type = INPUT_KEYBOARD;
@@ -99,12 +85,9 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
                     UINT uS = SendInput(2, in, sizeof(INPUT));
                     return -1;
                 }
-            }else
-                flagO = false;
+            }
             
-            if (mainCondition && kbStruct.vkCode == U && !flagU) {
-                flagU = true;
-
+            if (mainCondition && kbStruct.vkCode == U) {
                 if (upperCase){
                     INPUT in[2] = { 0, 0 };
                     in[0].type = INPUT_KEYBOARD;
@@ -130,12 +113,9 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
                     UINT uS = SendInput(2, in, sizeof(INPUT));
                     return -1;
                 }
-            }else
-                flagU = false;
+            }
             
-            if (mainCondition && kbStruct.vkCode == S && !flagS) {
-                flagS = true;
-
+            if (mainCondition && kbStruct.vkCode == S) {
                 if (upperCase){
                     INPUT in[2] = { 0, 0 };
                     in[0].type = INPUT_KEYBOARD;
@@ -161,8 +141,7 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
                     UINT uS = SendInput(2, in, sizeof(INPUT));
                     return -1;
                 }
-            }else
-                flagS = false;
+            }
         }
     }
 
@@ -173,7 +152,7 @@ int main(){
     ShowWindow(FindWindowA("ConsoleWindowClass", NULL), 0);
 
     if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0))){
-        MessageBox(NULL, "The Remapper doesn't work", "Error", MB_ICONERROR);
+        MessageBox(NULL, "The Umlaut Remapper doesn't work", "Error", MB_ICONERROR);
         exit(0);
     }
 
