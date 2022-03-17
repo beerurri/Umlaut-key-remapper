@@ -1,4 +1,4 @@
-# Umlaut and ß key remapper
+# Windows Umlaut and ß key remapper
 
 Types umlauts (ä, ö, ü, and ß) when Ctrl+Alt is pressed.  For example:
 
