@@ -15,132 +15,161 @@
 #define ue 0xFC // ü
 #define SS 0xDF // ß
 
+// FOR DEBUGGING: 1 or 0
+#define DEBUG 0
+
 LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam);
 
 HHOOK hook;
 
 KBDLLHOOKSTRUCT kbStruct;
 
-LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
-    if (nCode >= 0){
-        if (wParam == WM_KEYDOWN){
-            kbStruct = *((KBDLLHOOKSTRUCT*)lParam);
-            // if (kbStruct.vkCode == A)
-            //     return -1;
+bool mainCondition = false;
+bool upperCase = false;
 
-            bool mainCondition = GetAsyncKeyState(VK_LCONTROL) && GetAsyncKeyState(VK_LMENU); // LeftCtrl + LeftAlt
-            bool upperCase = GetKeyState(VK_CAPITAL) ^ (GetAsyncKeyState(VK_LSHIFT) || GetAsyncKeyState(VK_RSHIFT));
+short ctrlState = false;
+short altState = false;
 
-            if (mainCondition && kbStruct.vkCode == A) {
-                if (upperCase){
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = AE;
+bool flag = true;
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = AE;
+LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode >= 0)
+    {
+        kbStruct = *((KBDLLHOOKSTRUCT *)lParam);
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }else{
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = ae;
+        ctrlState = GetAsyncKeyState(VK_LCONTROL); // LeftCtrl
+        altState = GetAsyncKeyState(VK_LMENU);     // LeftAlt
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = ae;
+        mainCondition = ctrlState && altState; // hotkeys combination
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }
+        upperCase = GetKeyState(VK_CAPITAL) ^ (GetAsyncKeyState(VK_LSHIFT) || GetAsyncKeyState(VK_RSHIFT)); // CapsLk and Left/RightShift
+
+        if (mainCondition && kbStruct.vkCode == A && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
+        {
+            if (upperCase)
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = AE;
+
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = AE;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
             }
-            
-            if (mainCondition && kbStruct.vkCode == O) {
-                if (upperCase){
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = OE;
+            else
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = ae;
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = OE;
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = ae;
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }else{
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = oe;
-
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = oe;
-
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
             }
-            
-            if (mainCondition && kbStruct.vkCode == U) {
-                if (upperCase){
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = UE;
+        }
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = UE;
+        if (mainCondition && kbStruct.vkCode == O && kbStruct.flags == 0)
+        {
+            if (upperCase)
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = OE;
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }else{
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = ue;
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = OE;
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = ue;
-
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
             }
-            
-            if (mainCondition && kbStruct.vkCode == S) {
-                if (upperCase){
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = SS;
+            else
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = oe;
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = SS;
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = oe;
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }else{
-                    INPUT in[2] = { 0, 0 };
-                    in[0].type = INPUT_KEYBOARD;
-                    in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                    in[0].ki.wScan = SS;
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
+        }
 
-                    in[1].type = INPUT_KEYBOARD;
-                    in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                    in[1].ki.wScan = SS;
+        if (mainCondition && kbStruct.vkCode == U && kbStruct.flags == 0)
+        {
+            if (upperCase)
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = UE;
 
-                    UINT uS = SendInput(2, in, sizeof(INPUT));
-                    return -1;
-                }
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = UE;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
+            else
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = ue;
+
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = ue;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
+        }
+
+        if (mainCondition && kbStruct.vkCode == S && kbStruct.flags == 0)
+        {
+            if (upperCase)
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = SS;
+
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = SS;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
+            else
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = SS;
+
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = SS;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
             }
         }
     }
@@ -148,17 +177,20 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam){
     return CallNextHookEx(hook, nCode, wParam, lParam);
 }
 
-int main(){
-    ShowWindow(FindWindowA("ConsoleWindowClass", NULL), 0);
+int main()
+{
+    ShowWindow(FindWindowA("ConsoleWindowClass", NULL), DEBUG);
 
-    if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0))){
+    if (!(hook = SetWindowsHookEx(WH_KEYBOARD_LL, HookCallback, NULL, 0)))
+    {
         MessageBox(NULL, "The Umlaut Remapper doesn't work", "Error", MB_ICONERROR);
         exit(0);
     }
 
     MSG message;
 
-    while (true){
+    while (true)
+    {
         GetMessage(&message, NULL, 0, 0);
     }
 }
