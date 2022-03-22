@@ -36,4 +36,4 @@ This app uses winapi hooks.
 
 March 22, 2022
 
-Added <code>€</code> sign typing with <code>Ctrl+Alt+4</code>
+Added <code>€</code> sign typing with <code>Ctrl+Alt+4</code> (<code>Ctrl+Alt+$</code>)
