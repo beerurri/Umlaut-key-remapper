@@ -5,6 +5,7 @@
 #define O 0x4F
 #define U 0x55
 #define S 0x53
+#define DOLLAR 0x34
 
 // Alt codes
 #define AE 0xC4 // Ä
@@ -14,6 +15,7 @@
 #define UE 0xDC // Ü
 #define ue 0xFC // ü
 #define SS 0xDF // ß
+#define EURO 0x20AC
 
 // FOR DEBUGGING: 1 or 0
 #define DEBUG 0
@@ -30,8 +32,6 @@ bool upperCase = false;
 short ctrlState = false;
 short altState = false;
 
-bool flag = true;
-
 LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (nCode >= 0)
@@ -45,6 +45,7 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 
         upperCase = GetKeyState(VK_CAPITAL) ^ (GetAsyncKeyState(VK_LSHIFT) || GetAsyncKeyState(VK_RSHIFT)); // CapsLk and Left/RightShift
 
+        // A key handler
         if (mainCondition && kbStruct.vkCode == A && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
         {
             if (upperCase)
@@ -77,7 +78,8 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        if (mainCondition && kbStruct.vkCode == O && kbStruct.flags == 0)
+        // O key handler
+        if (mainCondition && kbStruct.vkCode == O && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
         {
             if (upperCase)
             {
@@ -109,7 +111,8 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        if (mainCondition && kbStruct.vkCode == U && kbStruct.flags == 0)
+        // U key handler
+        if (mainCondition && kbStruct.vkCode == U && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
         {
             if (upperCase)
             {
@@ -141,36 +144,40 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
             }
         }
 
-        if (mainCondition && kbStruct.vkCode == S && kbStruct.flags == 0)
+        // S key handler
+        if (mainCondition && kbStruct.vkCode == S && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
         {
-            if (upperCase)
-            {
-                INPUT in[2] = {0, 0};
-                in[0].type = INPUT_KEYBOARD;
-                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                in[0].ki.wScan = SS;
+            // without upperCase checking
 
-                in[1].type = INPUT_KEYBOARD;
-                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                in[1].ki.wScan = SS;
+            INPUT in[2] = {0, 0};
+            in[0].type = INPUT_KEYBOARD;
+            in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+            in[0].ki.wScan = SS;
 
-                UINT uS = SendInput(2, in, sizeof(INPUT));
-                return -1;
-            }
-            else
-            {
-                INPUT in[2] = {0, 0};
-                in[0].type = INPUT_KEYBOARD;
-                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-                in[0].ki.wScan = SS;
+            in[1].type = INPUT_KEYBOARD;
+            in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+            in[1].ki.wScan = SS;
 
-                in[1].type = INPUT_KEYBOARD;
-                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-                in[1].ki.wScan = SS;
+            UINT uS = SendInput(2, in, sizeof(INPUT));
+            return -1;
+        }
 
-                UINT uS = SendInput(2, in, sizeof(INPUT));
-                return -1;
-            }
+        // 4 ($) key handler
+        if (mainCondition && kbStruct.vkCode == DOLLAR && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
+        {
+            // without upperCase checking
+
+            INPUT in[2] = {0, 0};
+            in[0].type = INPUT_KEYBOARD;
+            in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+            in[0].ki.wScan = EURO;
+
+            in[1].type = INPUT_KEYBOARD;
+            in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+            in[1].ki.wScan = EURO;
+
+            UINT uS = SendInput(2, in, sizeof(INPUT));
+            return -1;
         }
     }
 
