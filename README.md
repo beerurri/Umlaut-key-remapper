@@ -2,21 +2,21 @@
 
 Types umlauts (ä, ö, ü, and ß) when Ctrl+Alt is pressed.  For example:
 
-<code>Ctrl+Alt+A</code> → ä
-<code>Ctrl+Alt+O</code> → ö
-<code>Ctrl+Alt+U</code> → ü
-<code>Ctrl+Alt+S</code> → ß
+<code>Ctrl+Alt+A</code> → ä<br>
+<code>Ctrl+Alt+O</code> → ö<br>
+<code>Ctrl+Alt+U</code> → ü<br>
+<code>Ctrl+Alt+S</code> → ß<br>
 
 The same, but in uppercase with additionally pressed <code>Shift</code> key, for example:
 
-<code>Ctrl+Alt+Shift+A</code> → Ä
-<code>Ctrl+Alt+Shift+O</code> → Ö
-<code>Ctrl+Alt+Shift+U</code> → Ü
-<code>Ctrl+Alt+Shift+S</code> → ẞ
+<code>Ctrl+Alt+Shift+A</code> → Ä<br>
+<code>Ctrl+Alt+Shift+O</code> → Ö<br>
+<code>Ctrl+Alt+Shift+U</code> → Ü<br>
+<code>Ctrl+Alt+Shift+S</code> → ẞ<br>
 
 Also includes additional key remappings:
 
-<code>Ctrl+Alt[+Shift]+4</code> → €
+<code>Ctrl+Alt[+Shift]+4</code> → €<br>
 
 <hr>
 
