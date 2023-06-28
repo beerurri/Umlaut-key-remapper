@@ -2,17 +2,21 @@
 
 Types umlauts (ä, ö, ü, and ß) when Ctrl+Alt is pressed.  For example:
 
-<code>Ctrl+Alt+A</code> → ä<br>
-<code>Ctrl+Alt+O</code> → ö<br>
-<code>Ctrl+Alt+U</code> → ü<br>
+<code>Ctrl+Alt+A</code> → ä
+<code>Ctrl+Alt+O</code> → ö
+<code>Ctrl+Alt+U</code> → ü
+<code>Ctrl+Alt+S</code> → ß
 
 The same, but in uppercase with additionally pressed <code>Shift</code> key, for example:
 
-<code>Ctrl+Alt+Shift+A</code> → Ä, etc.
+<code>Ctrl+Alt+Shift+A</code> → Ä
+<code>Ctrl+Alt+Shift+O</code> → Ö
+<code>Ctrl+Alt+Shift+U</code> → Ü
+<code>Ctrl+Alt+Shift+S</code> → ẞ
 
-This combination with S and with and without <code>Shift</code> gives ß:
+Also includes additional key remappings:
 
-<code>Ctrl+Alt[+Shift]+S</code> → ß
+<code>Ctrl+Alt[+Shift]+4</code> → €
 
 <hr>
 
@@ -32,7 +36,11 @@ This app uses winapi hooks.
 
 <hr>
 
-# UPD
+# UPDATES
+
+June 27, 2023
+
+Added uppercase <code>ẞ</code> typing with <code>Ctrl+Alt+Shift+S</code>
 
 March 22, 2022
 

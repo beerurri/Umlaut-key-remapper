@@ -15,6 +15,7 @@
 #define UE 0xDC // Ü
 #define ue 0xFC // ü
 #define SS 0xDF // ß
+#define capSS 0x1E9E // ẞ
 #define EURO 0x20AC
 
 // FOR DEBUGGING: 1 or 0
@@ -147,19 +148,34 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
         // S key handler
         if (mainCondition && kbStruct.vkCode == S && kbStruct.flags == 0) //  kbStruct.flags 7th bit (the most significant bit) -> The value is 0 if the key is pressed and 1 if it is being released.
         {
-            // without upperCase checking
+            if (upperCase)
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = capSS;
 
-            INPUT in[2] = {0, 0};
-            in[0].type = INPUT_KEYBOARD;
-            in[0].ki.dwFlags = KEYEVENTF_UNICODE;
-            in[0].ki.wScan = SS;
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = capSS;
 
-            in[1].type = INPUT_KEYBOARD;
-            in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
-            in[1].ki.wScan = SS;
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
+            else
+            {
+                INPUT in[2] = {0, 0};
+                in[0].type = INPUT_KEYBOARD;
+                in[0].ki.dwFlags = KEYEVENTF_UNICODE;
+                in[0].ki.wScan = SS;
 
-            UINT uS = SendInput(2, in, sizeof(INPUT));
-            return -1;
+                in[1].type = INPUT_KEYBOARD;
+                in[1].ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+                in[1].ki.wScan = SS;
+
+                UINT uS = SendInput(2, in, sizeof(INPUT));
+                return -1;
+            }
         }
 
         // 4 ($) key handler
